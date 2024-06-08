@@ -1,8 +1,19 @@
 import React from 'react';
+import { isMobile } from 'react-device-detect';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+const App: React.FC = () => {
+  if (!isMobile) {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <p>Откройте приложение на вашем смартфоне</p>
+        </header>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <header className="App-header">
