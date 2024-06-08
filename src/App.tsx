@@ -1,25 +1,37 @@
-import React from 'react';
-import { isMobile } from 'react-device-detect';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import HomePage from './Pages/HomePage';
+import React, { useEffect, useState } from 'react';
 
 const App: React.FC = () => {
+  const [shakeDetected, setShakeDetected] = useState(false);
+
+  useEffect(() => {
+    const handleDeviceMotion = (event: DeviceMotionEvent) => {
+      const acceleration = event.accelerationIncludingGravity;
+      if (!acceleration) return;
+
+      const threshold = 1.2; // Значение порога тряски
+      const x = acceleration.x ?? 0;
+      const y = acceleration.y ?? 0;
+      const z = acceleration.z ?? 0;
+
+      if (Math.abs(x) > threshold || Math.abs(y) > threshold || Math.abs(z) > threshold) {
+        setShakeDetected(true);
+        setTimeout(() => setShakeDetected(false), 500); // Сброс состояния после 500 мс
+      }
+    };
+
+    window.addEventListener('devicemotion', handleDeviceMotion);
+
+    return () => {
+      window.removeEventListener('devicemotion', handleDeviceMotion);
+    };
+  }, []);
+
+
   return (
-    <Router>
-      <Routes>
-        <Route path='/'element={<HomePage/>} />
-        {/* <Route path="/" element={!isMobile ? (
-          <div className="App">
-            <header className="App-header">
-              <p>Откройте приложение на вашем смартфоне</p>
-            </header>
-          </div>
-        ) : (
-          <Navigate to="/home" />
-        )} /> */}
-      </Routes>
-    </Router>
+    <div className="App">
+      {shakeDetected ? <p>Тряска обнаружена!</p> : <p>Ждем тряску...</p>}
+    </div>
   );
-}
+};
 
 export default App;
