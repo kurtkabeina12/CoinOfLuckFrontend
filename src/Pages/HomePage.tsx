@@ -1,39 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Box, Button, Typography } from '@mui/material';
 
+interface Acceleration {
+    x: number;
+    y: number;
+    z: number;
+}
+
 const HomePage: React.FC = () => {
     const [openModal, setOpenModal] = useState(false);
     const [isShaking, setIsShaking] = useState(false);
-    const [lastShakeTime, setLastShakeTime] = useState(0);
-    const [lastAcceleration, setLastAcceleration] = useState({ x: 0, y: 0, z: 0 });
-
     const ImageSrc = require('../img/GlavImg.png');
+    const [prevAcceleration, setPrevAcceleration] = useState<Acceleration>({ x: 0, y: 0, z: 0 });
 
     useEffect(() => {
-        const handleShake = (event: DeviceMotionEvent | null) => {
-            const threshold = 0.5; // Пороговое значение для определения тряски
-            const shakeTime = 200; // Время, в течение которого происходит тряска (мс)
+        const handleShake = (event: DeviceMotionEvent) => {
+            const threshold = 3; // Пороговое значение для определения тряски
+            const { x, y, z } = event.acceleration || { x: 0, y: 0, z: 0 };
 
-            if (event && event.acceleration) {
-                const { x, y, z } = event.acceleration;
+            const deltaX = Math.abs((x || 0) - prevAcceleration.x);
+            const deltaY = Math.abs((y || 0) - prevAcceleration.y);
+            const deltaZ = Math.abs((z || 0) - prevAcceleration.z);
 
-                // Рассчитываем общую изменение акселерации
-                const accelerationChange = Math.abs(x! - lastAcceleration.x) +
-                    Math.abs(y! - lastAcceleration.y) +
-                    Math.abs(z! - lastAcceleration.z);
-
-                // Если общее изменение акселерации превышает порог и прошло достаточно времени с предыдущей тряски
-                if (accelerationChange > threshold && Date.now() - lastShakeTime > shakeTime) {
-                    setIsShaking(true);
-                    setOpenModal(true);
-                    setLastShakeTime(Date.now());
-                } else {
-                    setIsShaking(false);
-                }
-
-                // Обновляем последнее известное значение акселерации
-                setLastAcceleration({ x: x!, y: y!, z: z! });
+            // Проверяем, если изменение ускорения превышает пороговое значение
+            if (deltaX > threshold || deltaY > threshold || deltaZ > threshold) {
+                setIsShaking(true);
+                setOpenModal(true);
+            } else {
+                setIsShaking(false);
             }
+
+            // Обновляем предыдущие значения ускорений
+            setPrevAcceleration({ x: x || 0, y: y || 0, z: z || 0 });
         };
 
         if ('ondevicemotion' in window) {
@@ -43,7 +41,7 @@ const HomePage: React.FC = () => {
         return () => {
             window.removeEventListener('devicemotion', handleShake);
         };
-    }, []);
+    }, [prevAcceleration]);
 
     const handleCloseModal = () => {
         setOpenModal(false);
