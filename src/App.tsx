@@ -8,20 +8,16 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/home">
-          {!isMobile ? <Navigate to="/desktop" /> : <HomePage />}
-        </Route>
-        <Route path="/desktop">
-          {!isMobile ? (
-            <div className="App">
-              <header className="App-header">
-                <p>Откройте приложение на вашем смартфоне</p>
-              </header>
-            </div>
-          ) : (
-            <Navigate to="/home" />
-          )}
-        </Route>
+        <Route path="/home" element={!isMobile ? <Navigate to="/desktop" /> : <HomePage />} />
+        <Route path="/desktop" element={!isMobile ? (
+          <div className="App">
+            <header className="App-header">
+              <p>Откройте приложение на вашем смартфоне</p>
+            </header>
+          </div>
+        ) : (
+          <Navigate to="/home" />
+        )} />
       </Routes>
     </Router>
   );
