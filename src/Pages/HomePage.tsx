@@ -3,26 +3,13 @@ import { Modal, Box, Button, Typography } from '@mui/material';
 
 const HomePage: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
   const ImageSrc = require('../img/GlavImg.png');
 
   useEffect(() => {
-    let lastShakeTime = 0;
-    let shakeTimeout: NodeJS.Timeout;
-
     const handleShake = () => {
-      const currentTime = new Date().getTime();
-      if (currentTime - lastShakeTime < 2000) {
-        // Если прошло меньше 2 секунд с последней тряски, перезапустить таймаут
-        clearTimeout(shakeTimeout);
-      } else {
-        // Если прошло больше 2 секунд с последней тряски, показать модальное окно
-        setOpenModal(true);
-      }
-      lastShakeTime = currentTime;
-      // Установить таймаут для скрытия модального окна через 2 секунды
-      shakeTimeout = setTimeout(() => {
-        setOpenModal(false);
-      }, 2000);
+      setIsShaking(true); // Устанавливаем состояние "Трясется" при тряске
+      setOpenModal(true); // Показываем модальное окно при тряске
     };
 
     if ('ondevicemotion' in window) {
@@ -31,7 +18,6 @@ const HomePage: React.FC = () => {
 
     return () => {
       window.ondevicemotion = null;
-      clearTimeout(shakeTimeout);
     };
   }, []);
 
@@ -48,6 +34,9 @@ const HomePage: React.FC = () => {
         <Button variant="contained" color="primary" style={{ margin: '0 10px' }}>Button 1</Button>
         <Button variant="contained" color="primary" style={{ margin: '0 10px' }}>Button 2</Button>
         <Button variant="contained" color="primary" style={{ margin: '0 10px' }}>Button 3</Button>
+      </div>
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <Typography variant="body1">{isShaking ? 'Трясется' : 'Не трясется'}</Typography>
       </div>
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'white', p: 4 }}>
