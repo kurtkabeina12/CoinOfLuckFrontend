@@ -4,7 +4,7 @@ import { useMotion } from 'react-use';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 
 const threshold = 3; // Пороговое значение для определения тряски
-const serverUrl = 'ws://localhost:8765'; // URL вашего WebSocket сервера
+const serverUrl = 'ws://0.0.0.0:8765'; // URL вашего WebSocket сервера
 
 const HomePage: React.FC = () => {
     const [openModal, setOpenModal] = useState(false);
