@@ -7,9 +7,8 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/home" element={!isMobile ? <Navigate to="/desktop" /> : <HomePage />} />
-        <Route path="/desktop" element={!isMobile ? (
+        <Route path='/'element={<HomePage/>} />
+        {/* <Route path="/" element={!isMobile ? (
           <div className="App">
             <header className="App-header">
               <p>Откройте приложение на вашем смартфоне</p>
@@ -17,7 +16,7 @@ const App: React.FC = () => {
           </div>
         ) : (
           <Navigate to="/home" />
-        )} />
+        )} /> */}
       </Routes>
     </Router>
   );

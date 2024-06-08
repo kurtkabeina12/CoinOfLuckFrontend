@@ -7,12 +7,22 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     let lastShakeTime = 0;
+    let shakeTimeout: NodeJS.Timeout;
+
     const handleShake = () => {
       const currentTime = new Date().getTime();
-      if (currentTime - lastShakeTime < 4000) {
+      if (currentTime - lastShakeTime < 2000) {
+        // Если прошло меньше 2 секунд с последней тряски, перезапустить таймаут
+        clearTimeout(shakeTimeout);
+      } else {
+        // Если прошло больше 2 секунд с последней тряски, показать модальное окно
         setOpenModal(true);
       }
       lastShakeTime = currentTime;
+      // Установить таймаут для скрытия модального окна через 2 секунды
+      shakeTimeout = setTimeout(() => {
+        setOpenModal(false);
+      }, 2000);
     };
 
     if ('ondevicemotion' in window) {
@@ -21,6 +31,7 @@ const HomePage: React.FC = () => {
 
     return () => {
       window.ondevicemotion = null;
+      clearTimeout(shakeTimeout);
     };
   }, []);
 
