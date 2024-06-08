@@ -7,17 +7,30 @@ const HomePage: React.FC = () => {
   const ImageSrc = require('../img/GlavImg.png');
 
   useEffect(() => {
-    const handleShake = () => {
-      setIsShaking(true); // Устанавливаем состояние "Трясется" при тряске
-      setOpenModal(true); // Показываем модальное окно при тряске
-    };
+    const handleShake = (event: DeviceMotionEvent | null) => {
+        const threshold = 15; 
+      
+        // Проверяем, если данные о тряске доступны и превышают пороговое значение
+        if (event && event.acceleration) {
+          if (
+            Math.abs(event.acceleration.x ?? 0) > threshold ||
+            Math.abs(event.acceleration.y ?? 0) > threshold ||
+            Math.abs(event.acceleration.z ?? 0) > threshold
+          ) {
+            setIsShaking(true);
+            setOpenModal(true);
+          } else {
+            setIsShaking(false);
+          }
+        }
+      };
 
     if ('ondevicemotion' in window) {
-      window.ondevicemotion = handleShake;
+      window.addEventListener('devicemotion', handleShake);
     }
 
     return () => {
-      window.ondevicemotion = null;
+      window.removeEventListener('devicemotion', handleShake);
     };
   }, []);
 
