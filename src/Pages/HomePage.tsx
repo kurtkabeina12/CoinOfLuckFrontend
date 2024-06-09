@@ -1,86 +1,144 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Box, Button, Typography } from '@mui/material';
-import { useMotion } from 'react-use';
-import { w3cwebsocket as W3CWebSocket } from 'websocket';
+import React, { useState, useEffect } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import { styled } from '@mui/system';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import PeopleIcon from '@mui/icons-material/People';
+import GavelIcon from '@mui/icons-material/Gavel';
 
-const threshold = 3; // Пороговое значение для определения тряски
-const serverUrl = 'ws://192.168.0.109:8765'; // URL вашего WebSocket сервера
+const ImageSrc = require('../img/GlavImg.png');
+
+const Overlay = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    bottom: 0,
+    width: '90%', // Add some margin for better spacing
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    display: 'flex',
+    justifyContent: 'center',
+    padding: theme.spacing(2),
+    margin: '0 5%', // Add margin for proper spacing from the edges
+    borderRadius: '4rem',
+}));
+
+const CustomButton = styled(Button)(({ theme }) => ({
+    margin: theme.spacing(1),
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Semi-transparent white
+    color: 'black',
+    width: '100%', // Full width
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.9)', // More opaque on hover
+    },
+    '&:active': {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)', // More transparent on active
+    },
+}));
 
 const HomePage: React.FC = () => {
-    const [openModal, setOpenModal] = useState(false);
-    const [isShaking, setIsShaking] = useState(false);
-    const ImageSrc = require('../img/GlavImg.png');
-    const [prevAcceleration, setPrevAcceleration] = useState({ x: 0, y: 0, z: 0 });
-    const { acceleration } = useMotion();
-    const [ws, setWs] = useState<W3CWebSocket | null>(null);
+    const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
     useEffect(() => {
-        // Подключение к WebSocket серверу
-        const client = new W3CWebSocket(serverUrl);
-
-        client.onopen = () => {
-            console.log('WebSocket Client Connected');
-            setWs(client);
-        };
-
-        client.onclose = () => {
-            console.log('WebSocket Client Disconnected');
-            setWs(null);
-        };
-
-        return () => {
-            if (client) {
-                client.close();
-            }
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!acceleration) return;
-
-        const { x, y, z } = acceleration;
-        const deltaX = Math.abs((x || 0) - prevAcceleration.x);
-        const deltaY = Math.abs((y || 0) - prevAcceleration.y);
-        const deltaZ = Math.abs((z || 0) - prevAcceleration.z);
-
-        if (deltaX > threshold || deltaY > threshold || deltaZ > threshold) {
-            setIsShaking(true);
-            if (ws && ws.readyState === W3CWebSocket.OPEN) {
-                ws.send(JSON.stringify({ isShaking: true, x, y, z }));
-            }
-            setOpenModal(true);
-        } else {
-            setIsShaking(false);
+        let timer: NodeJS.Timeout;
+        if (timeLeft !== null) {
+            timer = setInterval(() => {
+                setTimeLeft((prev) => (prev !== null && prev > 0 ? prev - 1 : null));
+            }, 1000);
         }
+        return () => clearInterval(timer);
+    }, [timeLeft]);
 
-        setPrevAcceleration({ x: x || 0, y: y || 0, z: z || 0 });
-    }, [acceleration, prevAcceleration, ws]);
+    const handleStartMining = () => {
+        setTimeLeft(8 * 60 * 60); // 8 hours in seconds
+    };
 
-    const handleCloseModal = () => {
-        setOpenModal(false);
+    const formatTime = (seconds: number) => {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 
     return (
-        <>
-            <div style={{ textAlign: 'center' }}>
-                <img src={ImageSrc} alt="image" style={{ maxWidth: '100%', maxHeight: '50vh' }} />
-            </div>
-            <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                <Button variant="contained" color="primary" style={{ margin: '0 10px' }}>Button 1</Button>
-                <Button variant="contained" color="primary" style={{ margin: '0 10px' }}>Button 2</Button>
-                <Button variant="contained" color="primary" style={{ margin: '0 10px' }}>Button 3</Button>
-            </div>
-            <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                <Typography variant="body1">{isShaking ? 'Трясется' : 'Не трясется'}</Typography>
-            </div>
-            <Modal open={openModal} onClose={handleCloseModal}>
-                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'white', p: 4 }}>
-                    <Typography variant="h5">Modal Title</Typography>
-                    <Typography variant="body1">Modal content goes here...</Typography>
-                    <Button variant="contained" color="primary" onClick={handleCloseModal} style={{ marginTop: '20px' }}>Close</Button>
+        <Box
+            sx={{
+                position: 'relative',
+                textAlign: 'center',
+                height: '80vh',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+            }}
+        >
+            <Box
+                component="img"
+                src={ImageSrc}
+                alt="main"
+                sx={{
+                    maxWidth: '100%',
+                    maxHeight: '40vh',
+                    objectFit: 'contain',
+                }}
+            />
+            <Box
+                sx={{
+                    position: 'absolute',
+                    bottom: '20%',
+                    width: '90%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    margin: '0 5%',
+                }}
+            >
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleStartMining}
+                    sx={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                        color: 'black',
+                        '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        },
+                        '&:active': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                        },
+                    }}
+                >
+                    Start Mining
+                </Button>
+            </Box>
+            {timeLeft !== null && (
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: '15%',
+                        width: '90%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        margin: '0 5%',
+                    }}
+                >
+                    <Typography variant="h5" color="white">
+                        Time Left: {formatTime(timeLeft)}
+                    </Typography>
                 </Box>
-            </Modal>
-        </>
+            )}
+            <Overlay>
+                <Box sx={{ display: 'flex', justifyContent: 'center', width: '90%' }}>
+                    <CustomButton startIcon={<GavelIcon />} aria-label="mine">
+                        Mine
+                    </CustomButton>
+                    <CustomButton startIcon={<AssignmentIcon />} aria-label="task">
+                        Task
+                    </CustomButton>
+                    <CustomButton startIcon={<PeopleIcon />} aria-label="friends">
+                        Friends
+                    </CustomButton>
+                </Box>
+            </Overlay>
+        </Box>
     );
 };
 
