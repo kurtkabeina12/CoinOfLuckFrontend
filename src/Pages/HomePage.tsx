@@ -4,8 +4,24 @@ import { styled } from '@mui/system';
 import PeopleIcon from '@mui/icons-material/People';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 const ImageSrc = require('../img/GlavImg.png');
+
+const TopBar = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: theme.spacing(2),
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    backdropFilter: 'blur(5px)',
+    borderRadius: '2rem',
+    margin: theme.spacing(2),
+}));
 
 const Overlay = styled(Box)(({ theme }) => ({
     position: 'absolute',
@@ -42,19 +58,28 @@ const NavButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const CustomButton = styled(Button)(({ theme }) => ({
-    margin: theme.spacing(1),
-    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Semi-transparent white
+const StyledFarmingButton = styled(Button)(({ theme }) => ({
+    flex: 1,
     color: 'black',
-    width: '100%', // Full width
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    textTransform: 'none',
+    backgroundColor: 'rgba(128, 128, 128, 0.7)', // Semi-transparent gray
+    backgroundImage: 'linear-gradient(to right, gold, rgba(255, 255, 255, 0.4))', // Gold gradient from left to right
+    borderRadius: '1rem',
+    border: "1px solid #0000003b",
+    padding: theme.spacing(1),
+    margin: theme.spacing(0.5),
     '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.9)', // More opaque on hover
+        backgroundColor: 'rgba(128, 128, 128, 0.9)', // More opaque on hover
     },
     '&:active': {
-        backgroundColor: 'rgba(255, 255, 255, 0.5)', // More transparent on active
+        backgroundColor: 'rgba(128, 128, 128, 0.5)', // More transparent on active
+    },
+    '&.Mui-disabled': {
+        color: 'rgba(0, 0, 0, 0.87)',
+        backgroundColor: 'rgba(128, 128, 128, 0.3)', // More transparent when disabled
     },
 }));
 
@@ -72,7 +97,7 @@ const HomePage: React.FC = () => {
     }, [timeLeft]);
 
     const handleStartMining = () => {
-        setTimeLeft(8 * 60 * 60); 
+        setTimeLeft(8 * 60 * 60);
     };
 
     const formatTime = (seconds: number) => {
@@ -95,6 +120,16 @@ const HomePage: React.FC = () => {
                 margin: '0 5%',
             }}
         >
+            <TopBar>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <AccountCircleIcon sx={{ marginRight: '0.5rem' }} />
+                    <Typography variant="caption">Имя пользователя</Typography>
+                </Box>
+                <Box>
+                    <Button startIcon={<MonetizationOnIcon />} sx={{ color: 'white' }}></Button>
+                    <Button startIcon={<DiamondIcon />} sx={{ color: 'white' }}></Button>
+                </Box>
+            </TopBar>
             <Box
                 component="img"
                 src={ImageSrc}
@@ -108,45 +143,23 @@ const HomePage: React.FC = () => {
             <Box
                 sx={{
                     position: 'absolute',
-                    bottom: '30%',
-                    width: '90%',
+                    bottom: '20%',
+                    width: '100%',
                     display: 'flex',
                     justifyContent: 'center',
                 }}
             >
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleStartMining}
-                    sx={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                        color: 'black',
-                        '&:hover': {
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        },
-                        '&:active': {
-                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                        },
-                    }}
-                >
-                    Start Mining
-                </Button>
+                <StyledFarmingButton onClick={handleStartMining} disabled={timeLeft !== null}>
+                    {timeLeft !== null ? (
+                        <>
+                            <Typography variant="caption">Farming</Typography>
+                            <Typography variant="caption">{formatTime(timeLeft)}</Typography>
+                        </>
+                    ) : (
+                        <Typography variant="caption">Start Farming</Typography>
+                    )}
+                </StyledFarmingButton>
             </Box>
-            {timeLeft !== null && (
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        bottom: '25%',
-                        width: '90%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Typography variant="h5" color="white">
-                        Time Left: {formatTime(timeLeft)}
-                    </Typography>
-                </Box>
-            )}
             <Overlay>
                 <NavButton startIcon={<DiamondIcon />}>
                     <Typography variant="caption">Mine</Typography>
@@ -158,7 +171,7 @@ const HomePage: React.FC = () => {
                     <Typography variant="caption">Friends</Typography>
                 </NavButton>
             </Overlay>
-        </Box>
+        </Box >
     );
 };
 
