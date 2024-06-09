@@ -1,22 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import PeopleIcon from '@mui/icons-material/People';
-import GavelIcon from '@mui/icons-material/Gavel';
+import DiamondIcon from '@mui/icons-material/Diamond';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 const ImageSrc = require('../img/GlavImg.png');
 
 const Overlay = styled(Box)(({ theme }) => ({
     position: 'absolute',
     bottom: 0,
-    width: '90%', // Add some margin for better spacing
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    width: '95%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     display: 'flex',
     justifyContent: 'center',
     padding: theme.spacing(2),
-    margin: '0 5%', // Add margin for proper spacing from the edges
-    borderRadius: '4rem',
+    borderRadius: '2rem',
+    margin: theme.spacing(2),
+}));
+
+const NavButton = styled(Button)(({ theme }) => ({
+    flex: 1,
+    color: 'white',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textTransform: 'none',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent white
+    borderRadius: '1rem',
+    padding: theme.spacing(1),
+    margin: theme.spacing(0.5),
+    '& .MuiButton-startIcon': {
+        margin: 0,
+        marginBottom: theme.spacing(0.5),
+    },
+    '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.2)', // Slightly more opaque on hover
+    },
+    '&:active': {
+        backgroundColor: 'rgba(255, 255, 255, 0.05)', // More transparent on active
+    },
 }));
 
 const CustomButton = styled(Button)(({ theme }) => ({
@@ -49,7 +72,7 @@ const HomePage: React.FC = () => {
     }, [timeLeft]);
 
     const handleStartMining = () => {
-        setTimeLeft(8 * 60 * 60); // 8 hours in seconds
+        setTimeLeft(8 * 60 * 60); 
     };
 
     const formatTime = (seconds: number) => {
@@ -69,6 +92,7 @@ const HomePage: React.FC = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: 'column',
+                margin: '0 5%',
             }}
         >
             <Box
@@ -84,11 +108,10 @@ const HomePage: React.FC = () => {
             <Box
                 sx={{
                     position: 'absolute',
-                    bottom: '20%',
+                    bottom: '30%',
                     width: '90%',
                     display: 'flex',
                     justifyContent: 'center',
-                    margin: '0 5%',
                 }}
             >
                 <Button
@@ -113,11 +136,10 @@ const HomePage: React.FC = () => {
                 <Box
                     sx={{
                         position: 'absolute',
-                        bottom: '15%',
+                        bottom: '25%',
                         width: '90%',
                         display: 'flex',
                         justifyContent: 'center',
-                        margin: '0 5%',
                     }}
                 >
                     <Typography variant="h5" color="white">
@@ -126,17 +148,15 @@ const HomePage: React.FC = () => {
                 </Box>
             )}
             <Overlay>
-                <Box sx={{ display: 'flex', justifyContent: 'center', width: '90%' }}>
-                    <CustomButton startIcon={<GavelIcon />} aria-label="mine">
-                        Mine
-                    </CustomButton>
-                    <CustomButton startIcon={<AssignmentIcon />} aria-label="task">
-                        Task
-                    </CustomButton>
-                    <CustomButton startIcon={<PeopleIcon />} aria-label="friends">
-                        Friends
-                    </CustomButton>
-                </Box>
+                <NavButton startIcon={<DiamondIcon />}>
+                    <Typography variant="caption">Mine</Typography>
+                </NavButton>
+                <NavButton startIcon={<AssignmentIcon />}>
+                    <Typography variant="caption">Task</Typography>
+                </NavButton>
+                <NavButton startIcon={<PeopleIcon />}>
+                    <Typography variant="caption">Friends</Typography>
+                </NavButton>
             </Overlay>
         </Box>
     );
