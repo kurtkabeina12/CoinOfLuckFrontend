@@ -86,17 +86,9 @@ const HomePage: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [coins, setCoins] = useState<number>(0);
     const [miningFinished, setMiningFinished] = useState<boolean>(false);
-    const [userData, setUserData] = useState<{ id: string | null, username: string | null }>({ id: null, username: null });
     const navigate = useNavigate();
 
     useEffect(() => {
-        const query = new URLSearchParams(window.location.search);
-        const id = query.get('id');
-        const username = query.get('username');
-        if (id && username) {
-            setUserData({ id, username });
-        }
-
         const endTime = localStorage.getItem('endTime');
         const storedCoins = localStorage.getItem('coins');
         const miningStatus = localStorage.getItem('miningFinished') === 'true';
@@ -185,7 +177,7 @@ const HomePage: React.FC = () => {
             <TopBar>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <AccountCircleIcon sx={{ marginRight: '0.5rem' }} />
-                    <Typography variant="caption">{userData.username}</Typography>
+                    <Typography variant="caption">Имя пользователя</Typography>
                 </Box>
             </TopBar>
             <Box
