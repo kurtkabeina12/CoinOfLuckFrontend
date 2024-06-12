@@ -131,10 +131,6 @@ const HomePage: React.FC = () => {
                     <AccountCircleIcon sx={{ marginRight: '0.5rem' }} />
                     <Typography variant="caption">Имя пользователя</Typography>
                 </Box>
-                <Box>
-                    <Button startIcon={<MonetizationOnIcon />} sx={{ color: 'white' }}></Button>
-                    <Button startIcon={<DiamondIcon />} sx={{ color: 'white' }}></Button>
-                </Box>
             </TopBar>
             <Box
                 component="img"
