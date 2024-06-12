@@ -13,7 +13,7 @@ const BackgroundImage = require('../img/Fon1.png');
 const TopBar = styled(Box)(({ theme }) => ({
     position: 'absolute',
     top: 0,
-    width: '90%',
+    width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -26,14 +26,13 @@ const TopBar = styled(Box)(({ theme }) => ({
 
 const Overlay = styled(Box)(({ theme }) => ({
     position: 'absolute',
-    bottom: theme.spacing(-7),
-    width: '90%',
+    bottom: 0,
+    width: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     display: 'flex',
     justifyContent: 'center',
     padding: theme.spacing(2),
     borderRadius: '2rem',
-    margin: theme.spacing(2),
 }));
 
 const NavButton = styled(Button)(({ theme }) => ({
@@ -111,9 +110,12 @@ const HomePage: React.FC = () => {
     return (
         <Box
             sx={{
-                position: 'relative',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
                 textAlign: 'center',
-                height: '80vh',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -175,7 +177,7 @@ const HomePage: React.FC = () => {
                     <Typography variant="caption">Friends</Typography>
                 </NavButton>
             </Overlay>
-        </Box >
+        </Box>
     );
 };
 
