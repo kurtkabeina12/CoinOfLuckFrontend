@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 import PeopleIcon from '@mui/icons-material/People';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 const ImageSrc = require('../img/GlavImg.png');
 
@@ -17,7 +17,7 @@ const TopBar = styled(Box)(({ theme }) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: theme.spacing(2),
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     backdropFilter: 'blur(5px)',
     borderRadius: '2rem',
     margin: theme.spacing(2),
@@ -41,7 +41,7 @@ const NavButton = styled(Button)(({ theme }) => ({
     flexDirection: 'column',
     alignItems: 'center',
     textTransform: 'none',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent white
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: '1rem',
     padding: theme.spacing(1),
     margin: theme.spacing(0.5),
@@ -50,10 +50,10 @@ const NavButton = styled(Button)(({ theme }) => ({
         marginBottom: theme.spacing(0.5),
     },
     '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.2)', // Slightly more opaque on hover
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
     },
     '&:active': {
-        backgroundColor: 'rgba(255, 255, 255, 0.05)', // More transparent on active
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
     },
 }));
 
@@ -64,48 +64,73 @@ const StyledFarmingButton = styled(Button)(({ theme }) => ({
     flexDirection: 'column',
     alignItems: 'center',
     textTransform: 'none',
-    backgroundColor: 'rgba(128, 128, 128, 0.7)', // Semi-transparent gray
-    backgroundImage: 'linear-gradient(to right, gold, rgba(255, 255, 255, 0.4))', // Gold gradient from left to right
+    backgroundColor: 'rgba(128, 128, 128, 0.7)',
+    backgroundImage: 'linear-gradient(to right, gold, rgba(255, 255, 255, 0.4))',
     borderRadius: '1rem',
     border: "1px solid #0000003b",
     padding: theme.spacing(1),
     margin: theme.spacing(0.5),
     '&:hover': {
-        backgroundColor: 'rgba(128, 128, 128, 0.9)', // More opaque on hover
+        backgroundColor: 'rgba(128, 128, 128, 0.9)',
     },
     '&:active': {
-        backgroundColor: 'rgba(128, 128, 128, 0.5)', // More transparent on active
+        backgroundColor: 'rgba(128, 128, 128, 0.5)',
     },
     '&.Mui-disabled': {
         color: 'rgba(0, 0, 0, 0.87)',
-        backgroundColor: 'rgba(128, 128, 128, 0.3)', // More transparent when disabled
+        backgroundColor: 'rgba(128, 128, 128, 0.3)',
     },
 }));
 
 const HomePage: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
+    const [coins, setCoins] = useState<number>(0);
+    const [miningFinished, setMiningFinished] = useState<boolean>(false);
+    const [userData, setUserData] = useState<{ id: string | null, username: string | null }>({ id: null, username: null });
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const query = new URLSearchParams(window.location.search);
+        const id = query.get('id');
+        const username = query.get('username');
+        if (id && username) {
+            setUserData({ id, username });
+        }
+
         const endTime = localStorage.getItem('endTime');
+        const storedCoins = localStorage.getItem('coins');
+        const miningStatus = localStorage.getItem('miningFinished') === 'true';
+
+        if (storedCoins) {
+            setCoins(Number(storedCoins));
+        }
+
         if (endTime) {
             const timeRemaining = Math.floor((Number(endTime) - Date.now()) / 1000);
             if (timeRemaining > 0) {
                 setTimeLeft(timeRemaining);
             } else {
+                setTimeLeft(0);
+                setMiningFinished(true);
+                localStorage.setItem('miningFinished', 'true');
                 localStorage.removeItem('endTime');
             }
+        } else if (miningStatus) {
+            setTimeLeft(0);
+            setMiningFinished(true);
         }
 
         let timer: NodeJS.Timeout;
-        if (timeLeft !== null) {
+        if (timeLeft !== null && timeLeft > 0) {
             timer = setInterval(() => {
                 setTimeLeft((prev) => {
                     if (prev !== null && prev > 0) {
                         return prev - 1;
                     } else {
-                        localStorage.removeItem('endTime');
+                        setMiningFinished(true);
+                        localStorage.setItem('miningFinished', 'true');
                         clearInterval(timer);
-                        return null;
+                        return 0;
                     }
                 });
             }, 1000);
@@ -115,9 +140,23 @@ const HomePage: React.FC = () => {
     }, [timeLeft]);
 
     const handleStartMining = () => {
-        const endTime = Date.now() + 8 * 60 * 60 * 1000;
+        const endTime = Date.now() + 10 * 1000; // 10 seconds for testing
         localStorage.setItem('endTime', endTime.toString());
-        setTimeLeft(8 * 60 * 60);
+        localStorage.removeItem('miningFinished');
+        setMiningFinished(false);
+        setTimeLeft(10); // 10 seconds
+    };
+
+    const handleClaim = () => {
+        setCoins((prev) => {
+            const newTotal = prev + 20;
+            localStorage.setItem('coins', newTotal.toString());
+            return newTotal;
+        });
+        setTimeLeft(null);
+        setMiningFinished(false);
+        localStorage.removeItem('endTime');
+        localStorage.removeItem('miningFinished');
     };
 
     const formatTime = (seconds: number) => {
@@ -140,13 +179,13 @@ const HomePage: React.FC = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: 'column',
-                backgroundColor: '#f0f0f0', // Белый фон
+                backgroundColor: '#f0f0f0',
             }}
         >
             <TopBar>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <AccountCircleIcon sx={{ marginRight: '0.5rem' }} />
-                    <Typography variant="caption">Имя пользователя</Typography>
+                    <Typography variant="caption">{userData.username}</Typography>
                 </Box>
             </TopBar>
             <Box
@@ -165,28 +204,35 @@ const HomePage: React.FC = () => {
                     bottom: '20%',
                     width: '100%',
                     display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
                     justifyContent: 'center',
                 }}
             >
-                <StyledFarmingButton onClick={handleStartMining} disabled={timeLeft !== null}>
-                    {timeLeft !== null ? (
-                        <>
-                            <Typography variant="caption">Farming</Typography>
-                            <Typography variant="caption">{formatTime(timeLeft)}</Typography>
-                        </>
-                    ) : (
+                <Typography variant="h6" gutterBottom>Coins: {coins}</Typography>
+                {timeLeft !== null && timeLeft > 0 ? (
+                    <StyledFarmingButton disabled>
+                        <Typography variant="caption">Farming</Typography>
+                        <Typography variant="caption">{formatTime(timeLeft)}</Typography>
+                    </StyledFarmingButton>
+                ) : miningFinished ? (
+                    <StyledFarmingButton onClick={handleClaim}>
+                        <Typography variant="caption">Claim $20</Typography>
+                    </StyledFarmingButton>
+                ) : (
+                    <StyledFarmingButton onClick={handleStartMining}>
                         <Typography variant="caption">Start Farming</Typography>
-                    )}
-                </StyledFarmingButton>
+                    </StyledFarmingButton>
+                )}
             </Box>
             <Overlay>
-                <NavButton startIcon={<DiamondIcon />}>
+                <NavButton startIcon={<DiamondIcon />} onClick={() => navigate('/')}>
                     <Typography variant="caption">Mine</Typography>
                 </NavButton>
-                <NavButton startIcon={<AssignmentIcon />}>
+                <NavButton startIcon={<AssignmentIcon />} onClick={() => navigate('/tasks')}>
                     <Typography variant="caption">Task</Typography>
                 </NavButton>
-                <NavButton startIcon={<PeopleIcon />}>
+                <NavButton startIcon={<PeopleIcon />} onClick={() => navigate('/friends')}>
                     <Typography variant="caption">Friends</Typography>
                 </NavButton>
             </Overlay>
