@@ -8,12 +8,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 const ImageSrc = require('../img/GlavImg.png');
-const BackgroundImage = require('../img/Fon1.png');
 
 const TopBar = styled(Box)(({ theme }) => ({
     position: 'absolute',
     top: 0,
-    width: '100%',
+    width: '90%',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -27,7 +26,7 @@ const TopBar = styled(Box)(({ theme }) => ({
 const Overlay = styled(Box)(({ theme }) => ({
     position: 'absolute',
     bottom: 0,
-    width: '100%',
+    width: '90%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     display: 'flex',
     justifyContent: 'center',
@@ -87,16 +86,37 @@ const HomePage: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
     useEffect(() => {
+        const endTime = localStorage.getItem('endTime');
+        if (endTime) {
+            const timeRemaining = Math.floor((Number(endTime) - Date.now()) / 1000);
+            if (timeRemaining > 0) {
+                setTimeLeft(timeRemaining);
+            } else {
+                localStorage.removeItem('endTime');
+            }
+        }
+
         let timer: NodeJS.Timeout;
         if (timeLeft !== null) {
             timer = setInterval(() => {
-                setTimeLeft((prev) => (prev !== null && prev > 0 ? prev - 1 : null));
+                setTimeLeft((prev) => {
+                    if (prev !== null && prev > 0) {
+                        return prev - 1;
+                    } else {
+                        localStorage.removeItem('endTime');
+                        clearInterval(timer);
+                        return null;
+                    }
+                });
             }, 1000);
         }
+
         return () => clearInterval(timer);
     }, [timeLeft]);
 
     const handleStartMining = () => {
+        const endTime = Date.now() + 8 * 60 * 60 * 1000;
+        localStorage.setItem('endTime', endTime.toString());
         setTimeLeft(8 * 60 * 60);
     };
 
@@ -120,10 +140,7 @@ const HomePage: React.FC = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: 'column',
-                backgroundImage: `url(${BackgroundImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
+                backgroundColor: '#f0f0f0', // Белый фон
             }}
         >
             <TopBar>
