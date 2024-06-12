@@ -8,11 +8,12 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 const ImageSrc = require('../img/GlavImg.png');
+const BackgroundImage = require('../img/Fon1.png');
 
 const TopBar = styled(Box)(({ theme }) => ({
     position: 'absolute',
     top: 0,
-    width: '100%',
+    width: '90%',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -25,8 +26,8 @@ const TopBar = styled(Box)(({ theme }) => ({
 
 const Overlay = styled(Box)(({ theme }) => ({
     position: 'absolute',
-    bottom: 0,
-    width: '95%',
+    bottom: theme.spacing(-7),
+    width: '90%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     display: 'flex',
     justifyContent: 'center',
@@ -117,7 +118,10 @@ const HomePage: React.FC = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: 'column',
-                margin: '0 5%',
+                backgroundImage: `url(${BackgroundImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
             }}
         >
             <TopBar>
