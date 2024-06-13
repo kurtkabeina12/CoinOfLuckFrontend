@@ -88,6 +88,11 @@ const HomePage: React.FC = () => {
     const [miningFinished, setMiningFinished] = useState<boolean>(false);
     const navigate = useNavigate();
 
+    const handleShowCurrentURL = () => {
+        const currentURL = window.location.href;
+        alert(`Current URL: ${currentURL}`);
+    };
+
     useEffect(() => {
         const endTime = localStorage.getItem('endTime');
         const storedCoins = localStorage.getItem('coins');
@@ -226,6 +231,9 @@ const HomePage: React.FC = () => {
                 </NavButton>
                 <NavButton startIcon={<PeopleIcon />} onClick={() => navigate('/friends')}>
                     <Typography variant="caption">Friends</Typography>
+                </NavButton>
+                <NavButton onClick={handleShowCurrentURL}>
+                    <Typography variant="caption">Show Current URL</Typography>
                 </NavButton>
             </Overlay>
         </Box>
