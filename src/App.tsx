@@ -1,29 +1,23 @@
 import React from 'react';
-import { isMobile } from 'react-device-detect';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import HomePage from './Pages/HomePage';
 import FriendsPage from './Pages/FriendsPage';
 import TasksPage from './Pages/TasksPage';
+import { store } from './redux-store/store';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path="/friends" element={<FriendsPage />} />
-        <Route path="/tasks" element={<TasksPage />} />
-        {/* <Route path="/" element={!isMobile ? (
-          <div className="App">
-            <header className="App-header">
-              <p>Откройте приложение на вашем смартфоне</p>
-            </header>
-          </div>
-        ) : (
-          <Navigate to="/home" />
-        )} /> */}
-      </Routes>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/friends" element={<FriendsPage />} />
+          <Route path="/tasks" element={<TasksPage />} />
+        </Routes>
+      </Router>
+    </Provider>
   );
-}
+};
 
 export default App;
