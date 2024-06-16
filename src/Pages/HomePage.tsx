@@ -9,6 +9,11 @@ import HammerIcon from '@mui/icons-material/Gavel';
 
 const ImageSrc = require('../img/GlavImg.png');
 
+interface HomePageProps {
+    userId: number;
+    username: string;
+}
+
 const TopBar = styled(Box)(({ theme }) => ({
     display: 'flex',
     justifyContent: 'space-between',
@@ -75,7 +80,7 @@ const StyledMiningButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const HomePage = () => {
+const HomePage: React.FC<HomePageProps> = ({ userId, username }) => {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [coins, setCoins] = useState<number>(0);
     const [miningFinished, setMiningFinished] = useState<boolean>(false);
@@ -151,6 +156,10 @@ const HomePage = () => {
         return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 
+    const YourName = () => {
+        alert(`User ID: ${userId}, Username: ${username}`);
+    };
+
     return (
         <Box
             sx={{
@@ -168,7 +177,7 @@ const HomePage = () => {
             <TopBar>
                 <Box sx={{ display: 'flex', alignItems: 'center', color: 'white' }}>
                     <AccountCircleIcon sx={{ marginRight: '0.5rem' }} />
-                    <Typography variant="caption">Имя пользователя</Typography>
+                    <Typography variant="caption">{username}</Typography>
                 </Box>
             </TopBar>
             <Box
@@ -224,6 +233,9 @@ const HomePage = () => {
                     <NavButton startIcon={<PeopleIcon />} onClick={() => navigate('/friends')}>
                         <Typography variant="caption">Friends</Typography>
                     </NavButton>
+                    <Button onClick={YourName}>
+                        <Typography variant="caption">YourName</Typography>
+                    </Button>
                 </Overlay>
             </Box>
         </Box>

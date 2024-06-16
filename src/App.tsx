@@ -21,7 +21,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path='/'  element={<HomePage />} />
+        <Route path='/'  element={<HomePage userId={userId} username={username} />} />
         <Route path="/friends"  element={<FriendsPage userId={userId} username={username}/>} />
         <Route path="/tasks" element={<TasksPage userId={userId} username={username} />} />
         {/* <Route path="/" element={!isMobile ? (
