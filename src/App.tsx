@@ -11,8 +11,9 @@ const App: React.FC = () => {
 
   const getUserIdAndUsername = (url: string) => {
     const params = new URLSearchParams(url);
-    const userId = parseInt(params.get('id') || '0', 10);
-    const username = params.get('username') || '';
+    const user = JSON.parse(decodeURIComponent(params.get('user') || '{}'));
+    const userId = user.id;
+    const username = user.username;
     return { userId, username };
   }
 
