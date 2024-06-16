@@ -18,11 +18,13 @@ const TopBar = styled(Box)(({ theme }) => ({
 }));
 
 const Overlay = styled(Box)(({ theme }) => ({
-    width: '100%',
+    width: '92%',
     backgroundColor: '#242424',
     display: 'flex',
     justifyContent: 'center',
     padding: theme.spacing(2),
+    position: 'fixed',
+    bottom: 0,
 }));
 
 const NavButton = styled(Button)(({ theme }) => ({
@@ -168,34 +170,46 @@ const HomePage = () => {
                     <Typography variant="caption">Имя пользователя</Typography>
                 </Box>
             </TopBar>
-            <Typography variant="h5" sx={{ padding: '20px 0' }}>Start mining now</Typography>
             <Box
                 sx={{
-                    width: '100%',
-                    minHeight: '218px',
-                    backgroundImage: `url(${ImageSrc})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                    flex: 1,
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'flex-end',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '20px',
                 }}
-            />
-            <Box sx={{ padding: '20px' }}>
-                {timeLeft !== null && timeLeft > 0 ? (
-                    <StyledMiningButton disabled>
-                        <Typography variant="caption">Farming</Typography>
-                        <Typography variant="caption">{formatTime(timeLeft)}</Typography>
-                    </StyledMiningButton>
-                ) : miningFinished ? (
-                    <StyledMiningButton onClick={handleClaim}>
-                        <Typography variant="caption">Claim $20</Typography>
-                    </StyledMiningButton>
-                ) : (
-                    <StyledMiningButton onClick={handleStartMining}>
-                        <Typography variant="caption">Start Farming</Typography>
-                    </StyledMiningButton>
-                )}
+            >
+                <Box
+                    sx={{
+                        width: '100%',
+                        minHeight: '218px',
+                        backgroundImage: `url(${ImageSrc})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-end',
+                        backgroundColor: '#1A1A1A',
+                    }}
+                />
+                <Typography variant="h6" sx={{ marginTop: 2 }}>Coins: {coins}</Typography>
+                <Box sx={{ marginTop: 2 }}>
+                    {timeLeft !== null && timeLeft > 0 ? (
+                        <StyledMiningButton disabled>
+                            <Typography variant="caption">Farming</Typography>
+                            <Typography variant="caption">{formatTime(timeLeft)}</Typography>
+                        </StyledMiningButton>
+                    ) : miningFinished ? (
+                        <StyledMiningButton onClick={handleClaim}>
+                            <Typography variant="caption">Claim $20</Typography>
+                        </StyledMiningButton>
+                    ) : (
+                        <StyledMiningButton onClick={handleStartMining}>
+                            <Typography variant="caption">Start Farming</Typography>
+                        </StyledMiningButton>
+                    )}
+                </Box>
             </Box>
             <Overlay>
                 <NavButton startIcon={<HammerIcon />} onClick={() => navigate('/')}>
