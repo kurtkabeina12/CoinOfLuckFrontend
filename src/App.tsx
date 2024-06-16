@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './Pages/HomePage';
@@ -6,25 +6,31 @@ import FriendsPage from './Pages/FriendsPage';
 import TasksPage from './Pages/TasksPage';
 
 const App: React.FC = () => {
+  const [userId, setUserId] = useState<number>(0);
+  const [username, setUsername] = useState<string>('');
 
-  const currentURL = window.location.href;
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch('https://192.168.0.109:3000/userinfo');
+        if (!response.ok) {
+          throw new Error('Failed to fetch user info');
+        }
+        const data = await response.json();
+        setUserId(data.userId);
+        setUsername(data.username);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
 
-  const getUserIdAndUsername = (url: string) => {
-    const params = new URLSearchParams(url);
-    const userId = parseInt(params.get('id') || '0', 10);
-    const username = params.get('username') || '';
-    alert(`User ID: ${userId}, Username: ${username}`);
-    return { userId, username };
-    
-  }
-
-  const { userId, username } = getUserIdAndUsername(currentURL);
-  
+    fetchUserInfo();
+  }, []);
   return (
     <Router>
       <Routes>
-        <Route path='/'  element={<HomePage userId={userId} username={username} />} />
-        <Route path="/friends"  element={<FriendsPage userId={userId} username={username}/>} />
+        <Route path='/' element={<HomePage userId={userId} username={username} />} />
+        <Route path="/friends" element={<FriendsPage userId={userId} username={username} />} />
         <Route path="/tasks" element={<TasksPage userId={userId} username={username} />} />
         {/* <Route path="/" element={!isMobile ? (
           <div className="App">
