@@ -7,6 +7,10 @@ import DiamondIcon from '@mui/icons-material/Diamond';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
+interface FriendsPageProps {
+    userId: number;
+    username: string;
+}
 
 const TopBar = styled(Box)(({ theme }) => ({
     position: 'absolute',
@@ -81,7 +85,7 @@ const StyledFarmingButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const FriendsPage: React.FC = () => {
+const FriendsPage: React.FC<FriendsPageProps> = ({ userId, username }) => {
     const navigate = useNavigate();
 
     return (

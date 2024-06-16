@@ -1,37 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 import PeopleIcon from '@mui/icons-material/People';
-import DiamondIcon from '@mui/icons-material/Diamond';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import HammerIcon from '@mui/icons-material/Gavel'; // Imported for mining icon
 
 const ImageSrc = require('../img/GlavImg.png');
 
 const TopBar = styled(Box)(({ theme }) => ({
-    position: 'absolute',
-    top: 0,
-    width: '90%',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: theme.spacing(2),
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    backdropFilter: 'blur(5px)',
-    borderRadius: '2rem',
-    margin: theme.spacing(2),
+    backgroundColor: '#1A1A1A',
 }));
 
 const Overlay = styled(Box)(({ theme }) => ({
-    position: 'absolute',
-    bottom: 0,
-    width: '90%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    width: '100%',
+    backgroundColor: '#242424',
     display: 'flex',
     justifyContent: 'center',
     padding: theme.spacing(2),
-    borderRadius: '2rem',
 }));
 
 const NavButton = styled(Button)(({ theme }) => ({
@@ -57,42 +48,35 @@ const NavButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const StyledFarmingButton = styled(Button)(({ theme }) => ({
+const StyledMiningButton = styled(Button)(({ theme }) => ({
     flex: 1,
-    color: 'black',
+    color: 'white',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     textTransform: 'none',
-    backgroundColor: 'rgba(128, 128, 128, 0.7)',
-    backgroundImage: 'linear-gradient(to right, gold, rgba(255, 255, 255, 0.4))',
+    backgroundColor: '#019863',
     borderRadius: '1rem',
     border: "1px solid #0000003b",
     padding: theme.spacing(1),
     margin: theme.spacing(0.5),
     '&:hover': {
-        backgroundColor: 'rgba(128, 128, 128, 0.9)',
+        backgroundColor: '#017A50',
     },
     '&:active': {
-        backgroundColor: 'rgba(128, 128, 128, 0.5)',
+        backgroundColor: '#015A40',
     },
     '&.Mui-disabled': {
-        color: 'rgba(0, 0, 0, 0.87)',
-        backgroundColor: 'rgba(128, 128, 128, 0.3)',
+        color: 'rgba(255, 255, 255, 0.87)',
+        backgroundColor: 'rgba(1, 152, 99, 0.5)',
     },
 }));
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [coins, setCoins] = useState<number>(0);
     const [miningFinished, setMiningFinished] = useState<boolean>(false);
     const navigate = useNavigate();
-    const { userId, username } = useParams<{ userId: string; username: string }>();
-
-    const handleShowCurrentURL = () => {
-        const currentURL = window.location.href;
-        alert(`Current URL: ${currentURL}`);
-    };
 
     useEffect(() => {
         const endTime = localStorage.getItem('endTime');
@@ -167,76 +151,61 @@ const HomePage: React.FC = () => {
     return (
         <Box
             sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
+                position: 'relative',
                 width: '100%',
                 height: '100%',
                 textAlign: 'center',
                 display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
                 flexDirection: 'column',
-                backgroundColor: '#f0f0f0',
+                backgroundColor: '#1A1A1A',
+                color: 'white',
+                overflowX: 'hidden',
             }}
         >
             <TopBar>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', color: 'white' }}>
                     <AccountCircleIcon sx={{ marginRight: '0.5rem' }} />
                     <Typography variant="caption">Имя пользователя</Typography>
                 </Box>
             </TopBar>
-            <Box
-                component="img"
-                src={ImageSrc}
-                alt="main"
-                sx={{
-                    maxWidth: '100%',
-                    maxHeight: '40vh',
-                    objectFit: 'contain',
-                }}
-            />
+            <Typography variant="h5" sx={{ padding: '20px 0' }}>Start mining now</Typography>
             <Box
                 sx={{
-                    position: 'absolute',
-                    bottom: '20%',
                     width: '100%',
+                    minHeight: '218px',
+                    backgroundImage: `url(${ImageSrc})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    justifyContent: 'flex-end',
                 }}
-            >
-                <h1>Welcome, {username}!</h1>
-                <p>Your user ID is: {userId}</p>
-                <Typography variant="h6" gutterBottom>Coins: {coins}</Typography>
+            />
+            <Box sx={{ padding: '20px' }}>
                 {timeLeft !== null && timeLeft > 0 ? (
-                    <StyledFarmingButton disabled>
+                    <StyledMiningButton disabled>
                         <Typography variant="caption">Farming</Typography>
                         <Typography variant="caption">{formatTime(timeLeft)}</Typography>
-                    </StyledFarmingButton>
+                    </StyledMiningButton>
                 ) : miningFinished ? (
-                    <StyledFarmingButton onClick={handleClaim}>
+                    <StyledMiningButton onClick={handleClaim}>
                         <Typography variant="caption">Claim $20</Typography>
-                    </StyledFarmingButton>
+                    </StyledMiningButton>
                 ) : (
-                    <StyledFarmingButton onClick={handleStartMining}>
+                    <StyledMiningButton onClick={handleStartMining}>
                         <Typography variant="caption">Start Farming</Typography>
-                    </StyledFarmingButton>
+                    </StyledMiningButton>
                 )}
             </Box>
             <Overlay>
-                <NavButton startIcon={<DiamondIcon />} onClick={() => navigate('/')}>
-                    <Typography variant="caption">Mine</Typography>
+                <NavButton startIcon={<HammerIcon />} onClick={() => navigate('/')}>
+                    <Typography variant="caption">Mining</Typography>
                 </NavButton>
                 <NavButton startIcon={<AssignmentIcon />} onClick={() => navigate('/tasks')}>
-                    <Typography variant="caption">Task</Typography>
+                    <Typography variant="caption">Tasks</Typography>
                 </NavButton>
                 <NavButton startIcon={<PeopleIcon />} onClick={() => navigate('/friends')}>
                     <Typography variant="caption">Friends</Typography>
-                </NavButton>
-                <NavButton onClick={handleShowCurrentURL}>
-                    <Typography variant="caption">Show Current URL</Typography>
                 </NavButton>
             </Overlay>
         </Box>
