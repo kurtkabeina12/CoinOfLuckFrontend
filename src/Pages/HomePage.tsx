@@ -5,7 +5,7 @@ import { styled } from '@mui/system';
 import PeopleIcon from '@mui/icons-material/People';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import HammerIcon from '@mui/icons-material/Gavel'; // Imported for mining icon
+import HammerIcon from '@mui/icons-material/Gavel'; 
 
 const ImageSrc = require('../img/GlavImg.png');
 
@@ -18,13 +18,14 @@ const TopBar = styled(Box)(({ theme }) => ({
 }));
 
 const Overlay = styled(Box)(({ theme }) => ({
-    width: '92%',
     backgroundColor: '#242424',
     display: 'flex',
     justifyContent: 'center',
     padding: theme.spacing(2),
     position: 'fixed',
     bottom: 0,
+    left: 0,
+    right: 0,
 }));
 
 const NavButton = styled(Button)(({ theme }) => ({
@@ -155,7 +156,7 @@ const HomePage = () => {
             sx={{
                 position: 'relative',
                 width: '100%',
-                height: '100%',
+                height: '100vh',
                 textAlign: 'center',
                 display: 'flex',
                 flexDirection: 'column',
@@ -189,7 +190,8 @@ const HomePage = () => {
                         backgroundPosition: 'center',
                         display: 'flex',
                         flexDirection: 'column',
-                        justifyContent: 'flex-end',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                         backgroundColor: '#1A1A1A',
                     }}
                 />
@@ -211,17 +213,19 @@ const HomePage = () => {
                     )}
                 </Box>
             </Box>
-            <Overlay>
-                <NavButton startIcon={<HammerIcon />} onClick={() => navigate('/')}>
-                    <Typography variant="caption">Mining</Typography>
-                </NavButton>
-                <NavButton startIcon={<AssignmentIcon />} onClick={() => navigate('/tasks')}>
-                    <Typography variant="caption">Tasks</Typography>
-                </NavButton>
-                <NavButton startIcon={<PeopleIcon />} onClick={() => navigate('/friends')}>
-                    <Typography variant="caption">Friends</Typography>
-                </NavButton>
-            </Overlay>
+            <Box sx={{ flexShrink: 0 }}>
+                <Overlay>
+                    <NavButton startIcon={<HammerIcon />} onClick={() => navigate('/')}>
+                        <Typography variant="caption">Mining</Typography>
+                    </NavButton>
+                    <NavButton startIcon={<AssignmentIcon />} onClick={() => navigate('/tasks')}>
+                        <Typography variant="caption">Tasks</Typography>
+                    </NavButton>
+                    <NavButton startIcon={<PeopleIcon />} onClick={() => navigate('/friends')}>
+                        <Typography variant="caption">Friends</Typography>
+                    </NavButton>
+                </Overlay>
+            </Box>
         </Box>
     );
 };
