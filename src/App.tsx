@@ -11,10 +11,11 @@ const App: React.FC = () => {
 
   const getUserIdAndUsername = (url: string) => {
     const params = new URLSearchParams(url);
-    const user = JSON.parse(decodeURIComponent(params.get('user') || '{}'));
-    const userId = user.id;
-    const username = user.username;
+    const userId = parseInt(params.get('id') || '0', 10);
+    const username = params.get('username') || '';
+    alert(`User ID: ${userId}, Username: ${username}`);
     return { userId, username };
+    
   }
 
   const { userId, username } = getUserIdAndUsername(currentURL);
