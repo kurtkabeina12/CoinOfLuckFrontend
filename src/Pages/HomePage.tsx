@@ -80,11 +80,31 @@ const StyledMiningButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const HomePage: React.FC<HomePageProps> = ({ userId, username }) => {
+const HomePage: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [coins, setCoins] = useState<number>(0);
     const [miningFinished, setMiningFinished] = useState<boolean>(false);
     const navigate = useNavigate();
+		const [userId, setUserId] = useState<number>(0);
+		const [username, setUsername] = useState<string>('');
+	
+		useEffect(() => {
+			const fetchUserInfo = async () => {
+				try {
+					const response = await fetch('https://192.168.0.109:3000/userinfo');
+					if (!response.ok) {
+						throw new Error('Failed to fetch user info');
+					}
+					const data = await response.json();
+					setUserId(data.userId);
+					setUsername(data.username);
+				} catch (error) {
+					console.error('Error fetching user info:', error);
+				}
+			};
+	
+			fetchUserInfo();
+		}, []);
 
     useEffect(() => {
         const endTime = localStorage.getItem('endTime');

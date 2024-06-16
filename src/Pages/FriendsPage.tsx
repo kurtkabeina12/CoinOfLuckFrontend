@@ -85,7 +85,7 @@ const StyledFarmingButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const FriendsPage: React.FC<FriendsPageProps> = ({ userId, username }) => {
+const FriendsPage: React.FC = () => {
     const navigate = useNavigate();
 
     return (

@@ -85,7 +85,7 @@ const StyledFarmingButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const TasksPage: React.FC<TasksPageProps> = ({userId, username}) => {
+const TasksPage: React.FC = () => {
     const navigate = useNavigate();
 
     return (
