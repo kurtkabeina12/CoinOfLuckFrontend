@@ -89,21 +89,21 @@ const HomePage: React.FC = () => {
 		const [username, setUsername] = useState<string>('');
 	
 		useEffect(() => {
-			const fetchUserInfo = async () => {
-				try {
-					const response = await fetch('https://192.168.0.109:3000/userinfo');
-					if (!response.ok) {
-						throw new Error('Failed to fetch user info');
-					}
-					const data = await response.json();
-					setUserId(data.userId);
-					setUsername(data.username);
-				} catch (error) {
-					console.error('Error fetching user info:', error);
-				}
-			};
+			// const fetchUserInfo = async () => {
+			// 	try {
+			// 		const response = await fetch('https://192.168.0.109:3000/userinfo');
+			// 		if (!response.ok) {
+			// 			throw new Error('Failed to fetch user info');
+			// 		}
+			// 		const data = await response.json();
+			// 		setUserId(data.userId);
+			// 		setUsername(data.username);
+			// 	} catch (error) {
+			// 		console.error('Error fetching user info:', error);
+			// 	}
+			// };
 	
-			fetchUserInfo();
+			// fetchUserInfo();
 		}, []);
 
     useEffect(() => {
