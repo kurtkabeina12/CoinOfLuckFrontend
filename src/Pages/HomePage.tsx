@@ -184,7 +184,7 @@ const HomePage = () => {
                 <Box
                     sx={{
                         width: '100%',
-                        minHeight: '218px',
+                        minHeight: '250px',
                         backgroundImage: `url(${ImageSrc})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
