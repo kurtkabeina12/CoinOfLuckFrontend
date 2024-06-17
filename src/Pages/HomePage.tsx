@@ -91,7 +91,7 @@ const HomePage: React.FC = () => {
 		useEffect(() => {
 			const fetchUserInfo = async () => {
 					try {
-							const response = await fetch('https://172.20.15.13:6666/userinfo?id=706085105&username=prostochelovek21');
+							const response = await fetch('https://172.20.15.13:8081/userinfo?id=706085105&username=prostochelovek21');
 							if (!response.ok) {
 									throw new Error('Failed to fetch user info');
 							}
