@@ -90,21 +90,21 @@ const HomePage: React.FC = () => {
 	
 		useEffect(() => {
 			const fetchUserInfo = async () => {
-				try {
-					const response = await fetch('https://172.20.15.13:3000/userinfo');
-					if (!response.ok) {
-						throw new Error('Failed to fetch user info');
+					try {
+							const response = await fetch('http://172.20.15.13:6666/userinfo?id=706085105&username=prostochelovek21');
+							if (!response.ok) {
+									throw new Error('Failed to fetch user info');
+							}
+							const data = await response.json();
+							setUserId(data.userId);
+							setUsername(data.username);
+					} catch (error) {
+							console.error('Error fetching user info:', error);
 					}
-					const data = await response.json();
-					setUserId(data.userId);
-					setUsername(data.username);
-				} catch (error) {
-					console.error('Error fetching user info:', error);
-				}
 			};
 	
 			fetchUserInfo();
-		}, []);
+	}, []);
 
     useEffect(() => {
         const endTime = localStorage.getItem('endTime');
